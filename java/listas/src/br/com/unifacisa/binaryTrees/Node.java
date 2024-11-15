@@ -1,53 +1,76 @@
-package br.com.unifacisa.binaryTrees;
+package br.com.unifacisa.BinaryTree;
 
-public class Node {
+public class ArvoreBinariaMatriz {
 
-	private Node right;
-	private Node left;
-	private int value;
+	private int[] arvore;
+	private int capacidade;
 
-	// Inicializa o nó
-	public Node(int value) {
-		this.value = value;
-		right = null;
-		left = null;
+	// Construtor que inicializa a árvore com uma capacidade máxima
+	public ArvoreBinariaMatriz(int capacidade) {
+		this.capacidade = capacidade;
+		this.arvore = new int[capacidade];
+		for (int i = 0; i < capacidade; i++) {
+			arvore[i] = -1; // Inicializamos os nós vazios com -1
+		}
 	}
 
-	// Inicializa o nó
-	public Node(Node left, int value, Node right) {
-		this.value = value;
-		this.right = right;
-		this.left = left;
+	// Inserção na árvore em matriz
+	public void insert(int valor) {
+		if (arvore[0] == -1) {
+			arvore[0] = valor;
+		} else {
+			insertNaMatriz(0, valor);
+		}
 	}
 
-	public void setNull() {
-		value = 0;
-		right = null;
-		left = null;
+	private void insertNaMatriz(int index, int valor) {
+		if (index >= capacidade) {
+			System.out.println("Capacidade máxima da árvore alcançada!");
+			return;
+		}
+
+		if (arvore[index] == -1) {
+			arvore[index] = valor;
+		} else if (valor < arvore[index]) {
+			insertNaMatriz(2 * index + 1, valor); // Inserção à esquerda
+		} else {
+			insertNaMatriz(2 * index + 2, valor); // Inserção à direita
+		}
 	}
 
-	public int getValue() {
-		return this.value;
+	// Exibir raiz
+	public void mostrarRaiz() {
+		if (arvore[0] != -1) {
+			System.out.println("Raiz: " + arvore[0]);
+		} else {
+			System.out.println("A árvore está vazia.");
+		}
 	}
 
-	public Node getLeft() {
-		return this.left;
+	// Percurso em ordem simétrica
+	public void emOrdem(int index) {
+		if (index < capacidade && arvore[index] != -1) {
+			emOrdem(2 * index + 1);
+			System.out.print(arvore[index] + " ");
+			emOrdem(2 * index + 2);
+		}
 	}
 
-	public Node getRight() {
-		return this.right;
+	// Percurso pré-ordem
+	public void preOrdem(int index) {
+		if (index < capacidade && arvore[index] != -1) {
+			System.out.print(arvore[index] + " ");
+			preOrdem(2 * index + 1);
+			preOrdem(2 * index + 2);
+		}
 	}
 
-	public void setValue(int _valor) {
-		value = _valor;
+	// Percurso pós-ordem
+	public void posOrdem(int index) {
+		if (index < capacidade && arvore[index] != -1) {
+			posOrdem(2 * index + 1);
+			posOrdem(2 * index + 2);
+			System.out.print(arvore[index] + " ");
+		}
 	}
-
-	public void setLeft(Node left) {
-		this.left = left;
-	}
-
-	public void setRight(Node right) {
-		this.right = right;
-	}
-
 }

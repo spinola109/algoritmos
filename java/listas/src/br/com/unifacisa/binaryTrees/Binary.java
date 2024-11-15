@@ -1,127 +1,62 @@
-package br.com.unifacisa.binaryTrees;
+package br.com.unifacisa.BinaryTree;
 
-public class Binary {
+public class ArvoreBinariaMatriz {
+	private final int[] arvore;
+	private final int capacidade;
 
-	private Node root = null;
-
-	public Node getRoot() {
-		return root;
-	}
-
-	public void insert(int value) {
-		root = insert(root, value);
-	}
-
-	public Node insert(Node node, int value) {
-
-		if (!isEmpty(node)) {
-
-			if (value < node.getValue()) {
-
-				if (node.getLeft() != null) {
-					insert(node.getLeft(), value);
-				} else {
-					System.out.println("  Inserindo " + value + " a esqueda de " + node.getValue());
-					node.setLeft(new Node(value));
-				}
-			} else if (value > node.getValue()) {
-				if (node.getRight() != null) {
-					insert(node.getRight(), value);
-				} else {
-					System.out.println("  Inserindo " + value + " a direita de " + node.getValue());
-					node.setRight(new Node(value));
-				}
-			}
-		} else {
-			node = new Node(value);
-		}
-
-		return node;
-	}
-
-	public boolean isEmpty(Node node) {
-		return node == null;
-	}
-
-	public void inOrder(Node no) {
-		if (no != null) {
-			inOrder(no.getLeft());
-			System.out.print(no.getValue() + " ");
-			inOrder(no.getRight());
+	public ArvoreBinariaMatriz(int capacidade) {
+		this.capacidade = capacidade;
+		this.arvore = new int[capacidade];
+		for (int i = 0; i < capacidade; i++) {
+			arvore[i] = -1; // Inicializa com -1 para indicar posições vazias
 		}
 	}
 
-	public void preOrder(Node no) {
-		if (no != null) {
-			System.out.print(no.getValue() + " ");
-			preOrder(no.getLeft());
-			preOrder(no.getRight());
-		}
+	public void insert(int valor) {
+		insert(0, valor);
 	}
 
-	public void postOrder(Node no) {
-		if (no != null) {
-			postOrder(no.getLeft());
-			postOrder(no.getRight());
-			System.out.print(no.getValue() + " ");
-		}
-	}
-
-	public void showRoot() {
-		if (root == null) {
-			System.out.println("A Arvore está vazia!");
+	private void insert(int indice, int valor) {
+		if (indice >= capacidade) {
+			System.out.println("A árvore está cheia.");
 			return;
 		}
-
-		System.out.println("Raiz " + root.getValue());
-	}
-
-	public Node remove(Node node, int value) {
-		if (node == null) {
-			System.out.println("A Arvore está vazia!");
-			return null;
-		}
-
-		System.out.println("  Percorrendo No " + node.getValue());
-
-		if (value < node.getValue()) {
-			node.setLeft(remove(node.getLeft(), value));
-
-		} else if (value > node.getValue()) {
-			node.setRight(remove(node.getRight(), value));
-
-		} else if (node.getLeft() != null && node.getRight() != null) // 2
-		// filhos
-		{
-			System.out.println("  Removeu No " + node.getValue());
-			node.setValue(findMin(node.getRight()).getValue());
-			node.setRight(removeMin(node.getRight()));
+		if (arvore[indice] == -1) {
+			arvore[indice] = valor;
+			System.out.println("Inserido " + valor + " na posição " + indice);
+		} else if (valor < arvore[indice]) {
+			insert(2 * indice + 1, valor);
 		} else {
-			System.out.println("  Removeu No " + node.getValue());
-			node = (node.getLeft() == null) ? node.getLeft() : node.getRight();
+			insert(2 * indice + 2, valor);
 		}
-		return node;
 	}
 
-	public Node removeMin(Node node) {
-		if (node == null) {
-			System.out.println("  ERRO ");
-		} else if (node.getLeft() != null) {
-			node.setLeft(removeMin(node.getLeft()));
-			return node;
+	public void emOrdem(int indice) {
+		if (indice >= capacidade || arvore[indice] == -1) return;
+		emOrdem(2 * indice + 1);
+		System.out.print(arvore[indice] + " ");
+		emOrdem(2 * indice + 2);
+	}
+
+	public void preOrdem(int indice) {
+		if (indice >= capacidade || arvore[indice] == -1) return;
+		System.out.print(arvore[indice] + " ");
+		preOrdem(2 * indice + 1);
+		preOrdem(2 * indice + 2);
+	}
+
+	public void posOrdem(int indice) {
+		if (indice >= capacidade || arvore[indice] == -1) return;
+		posOrdem(2 * indice + 1);
+		posOrdem(2 * indice + 2);
+		System.out.print(arvore[indice] + " ");
+	}
+
+	public void mostrarRaiz() {
+		if (arvore[0] == -1) {
+			System.out.println("A árvore está vazia!");
 		} else {
-			return node.getRight();
+			System.out.println("Raiz: " + arvore[0]);
 		}
-		return null;
 	}
-
-	public Node findMin(Node node) {
-		if (node != null) {
-			while (node.getLeft() != null) {
-				node = node.getLeft();
-			}
-		}
-		return node;
-	}
-
 }
