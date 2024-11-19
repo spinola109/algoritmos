@@ -6,53 +6,78 @@ import java.util.List;
 
 public class Grafo {
 
-	private int numVertices;
-	private List<List<Integer>> adjacencyList;
+    private int numVertices;
+    private List<List<Integer>> adjacencyList;
 
-	public Grafo(int numVertices) {
-		this.numVertices = numVertices;
-		this.adjacencyList = new ArrayList<>(numVertices);
+    public Grafo(int numVertices) {
+        this.numVertices = numVertices;
+        this.adjacencyList = new ArrayList<>(numVertices);
 
-		for (int i = 0; i < numVertices; i++) {
-			this.adjacencyList.add(new LinkedList<>());
-		}
-	}
+        for (int i = 0; i < numVertices; i++) {
+            this.adjacencyList.add(new LinkedList<>());
+        }
+    }
 
-	public void addEdge(int v, int w) {
-		/*
-		 * v = origem
-		 * w = destino
-		 */
-		adjacencyList.get(v).add(w);
-		adjacencyList.get(w).add(v); // Como é um grafo não direcionado, adicionamos a ligação inversa também
-	}
+    public void addEdge(int v, int w) {
+        // v = origem, w = destino
+        adjacencyList.get(v).add(w);
+        adjacencyList.get(w).add(v); // Grafo não direcionado
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
+    public void bfs(int start) {
+        boolean[] visited = new boolean[numVertices];
+        Queue<Integer> queue = new LinkedList<>();
 
-		for (int i = 0; i < numVertices; i++) {
-			sb.append("Vértice: ").append(i).append(":\n");
-			for (Integer neighbor : adjacencyList.get(i)) {
-				sb.append(" -> ").append(neighbor).append("\n");
-			}
-			sb.append("\n");
-		}
+        // Marca o nó inicial como visitado e o insere na fila
+        visited[start] = true;
+        queue.add(start);
 
-		return sb.toString();
-	}
+        System.out.println("Busca em Largura iniciando no vértice: " + start);
 
-	public static void main(String[] args) {
-		Grafo grafo = new Grafo(5);
+        while (!queue.isEmpty()) {
+            int current = queue.poll();
+            System.out.print(current + " ");
 
-		grafo.addEdge(0, 1);
-		grafo.addEdge(0, 4);
-		grafo.addEdge(1, 2);
-		grafo.addEdge(1, 3);
-		grafo.addEdge(1, 4);
-		grafo.addEdge(2, 3);
-		grafo.addEdge(3, 4);
+            // Para cada vizinho não visitado, marca como visitado e adiciona à fila
+            for (int neighbor : adjacencyList.get(current)) {
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    queue.add(neighbor);
+                }
+            }
+        }
+        System.out.println();
+    }
 
-		System.out.println(grafo.toString());
-	}
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < numVertices; i++) {
+            sb.append("Vértice ").append(i).append(": ");
+            for (Integer neighbor : adjacencyList.get(i)) {
+                sb.append(" -> ").append(neighbor);
+            }
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        Grafo grafo = new Grafo(5);
+
+        grafo.addEdge(0, 1);
+        grafo.addEdge(0, 4);
+        grafo.addEdge(1, 2);
+        grafo.addEdge(1, 3);
+        grafo.addEdge(1, 4);
+        grafo.addEdge(2, 3);
+        grafo.addEdge(3, 4);
+
+        System.out.println(grafo.toString());
+
+        // Executa a Busca em Largura começando do vértice 0
+        grafo.bfs(0);
+    }
 }
